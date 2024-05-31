@@ -34,7 +34,7 @@ module.exports = {
     cache: "./cache",
     sources: "./contracts",
     tests: "./test",
-    deploy: "./scripts/deploy",
+    deploy: "./deploy",
     deployments: "./deployments",
   },
   namedAccounts: {

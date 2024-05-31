@@ -1,39 +1,88 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-contract CyberFortuneGod {
+import "./MeritCoin.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+
+contract CyberFortuneGod is OwnableUpgradeable {
     uint256 public constant totalSupplyByDay = 888;
     uint256 public constant firstMintByDay = 88;
     uint256 public constant secondMintByDay = 66;
     uint256 public constant thirdMintByDay = 36;
+    uint256 public constant mintPrice = 3 * 1e15;
 
-    uint256 public immutable startTime;
-    uint256 public immutable variationFactor;
+    uint256 public startTime;
+    uint256 public variationFactor;
 
     uint256 public remainingSupply;
     uint256 public lastDecrement;
 
-    //Days => mintNum
+    MeritCoin public meritCoin;
+
+    //Record the number of mint successes every day since the start
+    //days => mint times
     mapping(uint256 => uint256) public mintNum;
 
-    constructor(uint256 _startTime, uint256 _variationFactor) {
+    //Record whether the distribution volume is updated on that day
+    mapping(uint256 => bool) public updateSupplyByDay;
+
+    function initialize(uint256 _startTime, uint256 _variationFactor) public initializer {
+        __Ownable_init(msg.sender);
         startTime = _startTime;
         variationFactor = _variationFactor;
         remainingSupply = totalSupplyByDay;
+        meritCoin = new MeritCoin(address(this));
     }
 
-    function getMintAmount() private returns (uint256 _returns) {
+    constructor(uint256 _startTime, uint256 _variationFactor) {
+        initialize(_startTime, _variationFactor);
+    }
+
+    // ==================== non-view function ====================
+
+    function offeringIncense(uint256 _nonce) external payable {
+        require(msg.value >= mintPrice, "CyberFortuneGod: Insufficient incense money");
+
+        //update supply by day
+        uint256 _days = getDays();
+        if (!updateSupplyByDay[_days]) {
+            updateSupplyByDay[_days] = true;
+            remainingSupply = totalSupplyByDay;
+        }
+
+        uint256 _returns = getMintAmount(_nonce);
+        require(_returns > 0, "CyberFortuneGod: The incense money has been distributed out today");
+
+        uint256 _decimals = meritCoin.decimals();
+        meritCoin.mint(msg.sender, 10 ** _decimals * _returns);
+    }
+
+    // ==================== view function ====================
+
+    function random(uint256 min, uint256 max, uint256 _nonce) public view returns (uint256) {
+        require(max > min, "max must be greater than min");
+        uint256 randomHash = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender, _nonce)));
+        return (randomHash % (max - min + 1)) + min;
+    }
+
+    function getDays() public view returns (uint256) {
+        return (block.timestamp - startTime) / (24 * 60 * 60);
+    }
+
+    // ==================== private function ====================
+
+    function getMintAmount(uint256 _nonce) private returns (uint256 _returns) {
         if (remainingSupply == 0) {
             return 0;
         }
 
-        uint256 _days = (block.timestamp - startTime) / (24 * 60 * 60);
+        uint256 _days = getDays();
         uint256 _mintNum = mintNum[_days];
 
         if (_mintNum < 3) {
             _returns = getTop3Amount(_mintNum);
         } else {
-            uint256 _randomSub = random(0, variationFactor);
+            uint256 _randomSub = random(0, variationFactor, _nonce);
             _returns = _randomSub >= lastDecrement ? lastDecrement : lastDecrement - _randomSub;
         }
 
@@ -51,15 +100,17 @@ contract CyberFortuneGod {
         }
     }
 
-    function random(uint256 min, uint256 max) public view returns (uint256) {
-        require(max > min, "max must be greater than min");
-        uint256 randomHash = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao)));
-        return (randomHash % (max - min + 1)) + min;
-    }
-
     function getTop3Amount(uint256 _mintNum) private pure returns (uint256 _returns) {
         if (_mintNum == 0) return firstMintByDay;
         if (_mintNum == 1) return secondMintByDay;
         if (_mintNum == 2) return thirdMintByDay;
     }
+
+    // ==================== owner function ====================
+
+    function getValue(address _to) external onlyOwner {
+        payable(_to).transfer(address(this).balance);
+    }
+
+    receive() external payable {}
 }
