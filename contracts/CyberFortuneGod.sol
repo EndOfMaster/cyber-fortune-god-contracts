@@ -26,6 +26,12 @@ contract CyberFortuneGod is OwnableUpgradeable {
     //Record whether the distribution volume is updated on that day
     mapping(uint256 => bool) public updateSupplyByDay;
 
+    event OfferingIncense(address _sender, uint256 _mintAmount);
+
+    event WithdrawETH(address _sender, address _receiver, uint256 _amount);
+
+    event UpdateSupplyByDay(address _sender, uint256 _days, uint256 _timestamp);
+
     function initialize(uint256 _startTime, uint256 _variationFactor) public initializer {
         __Ownable_init(msg.sender);
         startTime = _startTime;
@@ -40,6 +46,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     // ==================== non-view function ====================
 
+    //main user function
     function offeringIncense(uint256 _nonce) external payable {
         require(msg.value >= mintPrice, "CyberFortuneGod: Insufficient incense money");
 
@@ -48,13 +55,18 @@ contract CyberFortuneGod is OwnableUpgradeable {
         if (!updateSupplyByDay[_days]) {
             updateSupplyByDay[_days] = true;
             remainingSupply = totalSupplyByDay;
+            
+            emit UpdateSupplyByDay(msg.sender, _days, block.timestamp);
         }
 
         uint256 _returns = getMintAmount(_nonce);
         require(_returns > 0, "CyberFortuneGod: The incense money has been distributed out today");
 
         uint256 _decimals = meritCoin.decimals();
-        meritCoin.mint(msg.sender, 10 ** _decimals * _returns);
+        uint256 _mintAmount = 10 ** _decimals * _returns;
+        meritCoin.mint(msg.sender, _mintAmount);
+
+        emit OfferingIncense(msg.sender, _mintAmount);
     }
 
     // ==================== view function ====================
@@ -108,8 +120,11 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     // ==================== owner function ====================
 
-    function getValue(address _to) external onlyOwner {
-        payable(_to).transfer(address(this).balance);
+    function withdrawETH(address _to) external onlyOwner {
+        uint256 _balance = address(this).balance;
+        payable(_to).transfer(_balance);
+
+        emit WithdrawETH(msg.sender, _to, _balance);
     }
 
     receive() external payable {}
