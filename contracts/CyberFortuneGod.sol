@@ -9,7 +9,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
     uint256 public constant firstMintByDay = 88;
     uint256 public constant secondMintByDay = 66;
     uint256 public constant thirdMintByDay = 36;
-    uint256 public constant mintPrice = 3 * 1e15;
+    uint256 public constant mintPrice = 1e15;
 
     uint256 public startTime;
     uint256 public variationFactor;
@@ -26,6 +26,8 @@ contract CyberFortuneGod is OwnableUpgradeable {
     //Record whether the distribution volume is updated on that day
     mapping(uint256 => bool) public updateSupplyByDay;
 
+    mapping(uint256 => mapping(address => uint256)) public userMintNumByDay;
+
     event OfferingIncense(address _sender, uint256 _mintAmount);
 
     event WithdrawETH(address _sender, address _receiver, uint256 _amount);
@@ -33,15 +35,14 @@ contract CyberFortuneGod is OwnableUpgradeable {
     event UpdateSupplyByDay(address _sender, uint256 _days, uint256 _timestamp);
 
     function initialize(uint256 _startTime, uint256 _variationFactor) public initializer {
-        __Ownable_init(msg.sender);
+        __Ownable_init();
         startTime = _startTime;
         variationFactor = _variationFactor;
         remainingSupply = totalSupplyByDay;
         meritCoin = new MeritCoin(address(this));
-    }
 
-    constructor(uint256 _startTime, uint256 _variationFactor) {
-        initialize(_startTime, _variationFactor);
+        uint256 _decimals = meritCoin.decimals();
+        meritCoin.mint(msg.sender, 10 ** _decimals * 888888);
     }
 
     // ==================== non-view function ====================
@@ -50,17 +51,22 @@ contract CyberFortuneGod is OwnableUpgradeable {
     function offeringIncense(uint256 _nonce) external payable {
         require(msg.value >= mintPrice, "CyberFortuneGod: Insufficient incense money");
 
-        //update supply by day
         uint256 _days = getDays();
+
+        require(userMintNumByDay[_days][msg.sender] < 3, "CyberFortuneGod: Mint up to three times a day");
+
+        //update supply by day
         if (!updateSupplyByDay[_days]) {
             updateSupplyByDay[_days] = true;
             remainingSupply = totalSupplyByDay;
-            
+
             emit UpdateSupplyByDay(msg.sender, _days, block.timestamp);
         }
 
         uint256 _returns = getMintAmount(_nonce);
         require(_returns > 0, "CyberFortuneGod: The incense money has been distributed out today");
+
+        userMintNumByDay[_days][msg.sender] += 1;
 
         uint256 _decimals = meritCoin.decimals();
         uint256 _mintAmount = 10 ** _decimals * _returns;

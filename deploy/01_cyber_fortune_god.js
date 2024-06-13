@@ -12,7 +12,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     let impl = await deploy('Impl', {
         from: deployer,
         contract: 'CyberFortuneGod',
-        args: params,
+        args: [],
         log: true,
         skipIfAlreadyDeployed: true,
     });
@@ -38,17 +38,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
         log: true,
         skipIfAlreadyDeployed: true,
     });
+
     const proxyAddress = proxy.address;
+
     const MyTransparentUpgradeableProxy = await ethers.getContractFactory('MyTransparentUpgradeableProxy')
     proxy = MyTransparentUpgradeableProxy.attach(proxy.address);
 
-    let implAddress = await proxy.implementation();
-    console.log("implAddress:", implAddress);
+    const oldImplAddress = await proxyAdmin.getProxyImplementation(proxyAddress)
 
-    if (implAddress !== ethers.AddressZero && implAddress !== impl.address) {
-        await proxyAdmin.upgradeAndCall(proxyAddress, impl.address, cfdProxyData);
-        console.log("upgrade Post Office impl done");
+    if (oldImplAddress !== ethers.AddressZero && oldImplAddress !== impl.address) {
+        await proxyAdmin.upgrade(proxyAddress, impl.address);
+        console.log("upgrade Cyber Fortune God impl done");
     }
-
 };
 module.exports.tags = ['CyberFortuneGod'];

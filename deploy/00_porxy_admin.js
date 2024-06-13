@@ -7,7 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     if (proxyAdminAddress == '') {
         await deploy('ProxyAdmin', {
             from: deployer,
-            args: [deployer],
+            args: [],
             log: true,
             skipIfAlreadyDeployed: true,
         });
