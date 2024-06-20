@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract MeritCoin is ERC20 {
     address public immutable minter;
 
-    constructor(address _minter) ERC20("MeritCoin", "MC") {
+    constructor(address _minter, address _receiver) ERC20("MeritCoin", "MC") {
         minter = _minter;
+        _mint(_receiver, 10 ** decimals() * 888888);
     }
 
     function mint(address _to, uint256 _amount) external {
