@@ -12,7 +12,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
     uint256 public constant fourthMintByDay = 30;
 
     address public meritCoin;
-    address public drawFortuneStick;
+    address public fortuneStick;
 
     uint256 public startTime;
     uint256 public totalSupplyByDay;
@@ -91,8 +91,8 @@ contract CyberFortuneGod is OwnableUpgradeable {
         IMeritCoin(meritCoin).transferFrom(msg.sender, address(this), _burnAmount);
         IMeritCoin(meritCoin).burn(_burnAmount);
 
-        uint256 _tokenId = IDrawFortuneStick(drawFortuneStick).drawFortune(msg.sender);
-        uint256 _stickNo = IDrawFortuneStick(drawFortuneStick).getStickNo(_tokenId);
+        uint256 _tokenId = IFortuneStick(fortuneStick).draw(msg.sender);
+        uint256 _stickNo = IFortuneStick(fortuneStick).getStickNo(_tokenId);
 
         emit DrawFortune(msg.sender, _tokenId, _stickNo);
     }
