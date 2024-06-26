@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import "./interface/IMeritCoin.sol";
-import "./interface/IDrawFortuneStick.sol";
+import "./interface/IFortuneStick.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract CyberFortuneGod is OwnableUpgradeable {

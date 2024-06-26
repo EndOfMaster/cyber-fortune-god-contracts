@@ -4,7 +4,9 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DrawFortuneStick is Ownable, ERC721Enumerable {
+// User can consume MERIT to draw new fortune stick.
+// Each fortune stick will record the original drawer and the draw time, which will not be changed when transferring
+contract FortuneStick is Ownable, ERC721Enumerable {
     using Strings for uint256;
     using Strings for address;
 
@@ -17,15 +19,14 @@ contract DrawFortuneStick is Ownable, ERC721Enumerable {
 
     event SetBaseURI(address _sender, string _old, string _new);
 
-    constructor(address _minter, string memory _baseURI_) Ownable() ERC721("Draw Fortune Stick", "DFS") {
+    constructor(address _minter, string memory _baseURI_) Ownable() ERC721("Fortune Stick", "FS") {
         minter = _minter;
         baseURI = _baseURI_;
     }
 
     // ==================== non-view function ====================
-
-    function drawFortune(address _to) external returns (uint256 _tokenId) {
-        require(msg.sender == minter, "DrawFortuneStick: You are not minter");
+    function draw(address _to) external returns (uint256 _tokenId) {
+        require(msg.sender == minter, "FortuneStick: You are not minter");
 
         _tokenId = totalSupply();
 
