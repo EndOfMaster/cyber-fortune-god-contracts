@@ -2,6 +2,7 @@
 pragma solidity 0.8.20;
 
 import "./interface/IMeritCoin.sol";
+import "./interface/IDrawFortuneStick.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract CyberFortuneGod is OwnableUpgradeable {
@@ -10,13 +11,13 @@ contract CyberFortuneGod is OwnableUpgradeable {
     uint256 public constant thirdMintByDay = 36;
     uint256 public constant fourthMintByDay = 30;
 
-    // uint256 public constant 1.04491013
+    address public meritCoin;
+    address public drawFortuneStick;
 
     uint256 public startTime;
     uint256 public totalSupplyByDay;
-    uint256 public decreaseCoefficient;
+    uint256 public decreaseCoefficient; //1.04491013
     uint256 public mintPrice;
-    address public meritCoin;
 
     uint256 public remainingSupply;
     uint256 public lastDecrement;
@@ -31,6 +32,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
     mapping(uint256 => mapping(address => uint256)) public userMintNumByDay;
 
     event OfferingIncense(address _sender, uint256 _mintAmount);
+    event DrawFortune(address _sender, uint256 _tokenId, uint256 _stickNo);
     event UpdateSupplyByDay(address _sender, uint256 _days, uint256 _timestamp);
 
     event InitMeritCoin(address _sender, address _meritCoin);
@@ -54,7 +56,6 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     // ==================== non-view function ====================
 
-    //main user function
     function offeringIncense() external payable {
         require(msg.value >= mintPrice, "CyberFortuneGod: Insufficient incense money");
 
@@ -82,6 +83,20 @@ contract CyberFortuneGod is OwnableUpgradeable {
         emit OfferingIncense(msg.sender, _mintAmount);
     }
 
+    function drawFortune() external {
+        uint256 _decimals = IMeritCoin(meritCoin).decimals();
+        uint256 _burnAmount = 10 ** _decimals * 5;
+        require(IMeritCoin(meritCoin).allowance(msg.sender, address(this)) > 10 ** _decimals * 5, "CyberFortuneGod: Requires 5 Merit Coin");
+
+        IMeritCoin(meritCoin).transferFrom(msg.sender, address(this), _burnAmount);
+        IMeritCoin(meritCoin).burn(_burnAmount);
+
+        uint256 _tokenId = IDrawFortuneStick(drawFortuneStick).drawFortune(msg.sender);
+        uint256 _stickNo = IDrawFortuneStick(drawFortuneStick).getStickNo(_tokenId);
+
+        emit DrawFortune(msg.sender, _tokenId, _stickNo);
+    }
+
     // ==================== view function ====================
 
     function getDays() public view returns (uint256) {
@@ -97,8 +112,9 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
         uint256 _days = getDays();
         uint256 _mintNum = mintNum[_days];
+        uint256 _decimals = IMeritCoin(meritCoin).decimals();
 
-        _returns = _mintNum < 4 ? getTop4Amount(_mintNum) : lastDecrement / decreaseCoefficient;
+        _returns = _mintNum < 4 ? getTop4Amount(_decimals, _mintNum) : (lastDecrement * (10 ** _decimals)) / decreaseCoefficient;
 
         if (_returns >= remainingSupply) {
             _returns = remainingSupply;
@@ -113,8 +129,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
         }
     }
 
-    function getTop4Amount(uint256 _mintNum) private view returns (uint256 _returns) {
-        uint256 _decimals = IMeritCoin(meritCoin).decimals();
+    function getTop4Amount(uint256 _decimals, uint256 _mintNum) private pure returns (uint256 _returns) {
         if (_mintNum == 0) return 10 ** _decimals * firstMintByDay;
         if (_mintNum == 1) return 10 ** _decimals * secondMintByDay;
         if (_mintNum == 2) return 10 ** _decimals * thirdMintByDay;

@@ -15,4 +15,8 @@ contract MeritCoin is ERC20 {
         require(msg.sender == minter, "MeritCoin: You are not minter");
         _mint(_to, _amount);
     }
+
+    function burn(uint256 _amount) external {
+        _burn(msg.sender, _amount);
+    }
 }
