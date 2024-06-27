@@ -26,6 +26,11 @@ contract FortuneStick is Ownable, ERC721Enumerable {
 
     // ==================== non-view function ====================
 
+    /**
+     * @dev Draws a fortune stick (mint new NFT) for the specified address.
+     * @param _to The address to receive the fortune stick.
+     * @return _tokenId The ID of the fortune stick token.
+     */
     function drawFortune(address _to) external returns (uint256 _tokenId) {
         require(msg.sender == minter, "DrawFortuneStick: You are not minter");
 

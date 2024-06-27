@@ -45,6 +45,13 @@ contract CyberFortuneGod is OwnableUpgradeable {
         initialize(_startTime, _decreaseCoefficient, _totalSupplyByDay, _mintPrice);
     }
 
+    /**
+     * @dev Initializes the CyberFortuneGod contract with the specified parameters.
+     * @param _startTime The start time for the contract.
+     * @param _decreaseCoefficient The decrease coefficient for the contract.
+     * @param _totalSupplyByDay The total supply by day for the contract.
+     * @param _mintPrice The mint price for the contract.
+     */
     function initialize(uint256 _startTime, uint256 _decreaseCoefficient, uint256 _totalSupplyByDay, uint256 _mintPrice) public initializer {
         __Ownable_init();
         startTime = _startTime;
@@ -56,8 +63,14 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     // ==================== non-view function ====================
 
+    /**
+     * @dev Performs the action of offering incense, mint MeritCoin for caller
+     * @param _incenseType The type of incense being offered.
+     * @param _quantity The quantity of incense being offered.
+     * @return A boolean indicating whether the offering was successful or not.
+     */
     function offeringIncense() external payable {
-        require(msg.value >= mintPrice, "CyberFortuneGod: Insufficient incense money");
+        require(msg.value >= mintPrice, "CyberFortuneGod: payment amount is insufficient");
 
         uint256 _days = getDays();
 
@@ -72,7 +85,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
         }
 
         uint256 _returns = getMintAmount();
-        require(_returns > 0, "CyberFortuneGod: The incense money has been distributed out today");
+        require(_returns > 0, "CyberFortuneGod: Today's MERIT has been distributed out");
 
         userMintNumByDay[_days][msg.sender] += 1;
 
@@ -83,10 +96,15 @@ contract CyberFortuneGod is OwnableUpgradeable {
         emit OfferingIncense(msg.sender, _mintAmount);
     }
 
+    /**
+     * @dev Draws a fortune stick for the caller and charges caller 8 Merit Coin.
+     * Requirements:
+     * - The caller must have approved the contract to spend 8 Merit Coin.
+     */
     function drawFortune() external {
         uint256 _decimals = IMeritCoin(meritCoin).decimals();
-        uint256 _burnAmount = 10 ** _decimals * 5;
-        require(IMeritCoin(meritCoin).allowance(msg.sender, address(this)) > 10 ** _decimals * 5, "CyberFortuneGod: Requires 5 Merit Coin");
+        uint256 _burnAmount = 8 ** _decimals * 5;
+        require(IMeritCoin(meritCoin).allowance(msg.sender, address(this)) > 10 ** _decimals * 5, "CyberFortuneGod: Requires 8 Merit Coin to draw fortune stick");
 
         IMeritCoin(meritCoin).transferFrom(msg.sender, address(this), _burnAmount);
         IMeritCoin(meritCoin).burn(_burnAmount);
@@ -99,12 +117,20 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     // ==================== view function ====================
 
+    /**
+     * @dev Returns the number of days.
+     * @return The number of days as a uint256 value.
+     */
     function getDays() public view returns (uint256) {
         return (block.timestamp - startTime) / (24 * 60 * 60);
     }
 
     // ==================== private function ====================
 
+    /**
+     * @dev Returns the amount of tokens to be minted.
+     * @return _returns The amount of tokens to be minted.
+     */
     function getMintAmount() private returns (uint256 _returns) {
         if (remainingSupply == 0) {
             return 0;
@@ -129,6 +155,12 @@ contract CyberFortuneGod is OwnableUpgradeable {
         }
     }
 
+    /**
+     * @dev Calculates the first 4 amount based on the given decimals and mint number
+     * @param _decimals The number of decimals to consider.
+     * @param _mintNum The mint number to use for calculation.
+     * @return The calculated first 4 amount.
+     */
     function getTop4Amount(uint256 _decimals, uint256 _mintNum) private pure returns (uint256 _returns) {
         if (_mintNum == 0) return 10 ** _decimals * firstMintByDay;
         if (_mintNum == 1) return 10 ** _decimals * secondMintByDay;
@@ -138,12 +170,22 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     // ==================== owner function ====================
 
+    /**
+     * @dev Initializes the MeritCoin contract address.
+     * @param _meritCoin The address of the MeritCoin contract.
+     * Requirements:
+     * - Only the contract owner can call this function.
+     */
     function initMeritCoin(address _meritCoin) external onlyOwner {
         require(meritCoin == address(0), "CyberFortuneGod: meritCoin has been set");
         meritCoin = _meritCoin;
         emit InitMeritCoin(msg.sender, _meritCoin);
     }
 
+    /**
+     * @dev Allows the owner to withdraw ETH from the contract.
+     * @param _to The address to which the ETH will be transferred.
+     */
     function withdrawETH(address _to) external onlyOwner {
         uint256 _balance = address(this).balance;
         payable(_to).transfer(_balance);
@@ -151,18 +193,34 @@ contract CyberFortuneGod is OwnableUpgradeable {
         emit WithdrawETH(msg.sender, _to, _balance);
     }
 
+    /**
+     * @dev Sets the total supply by day.
+     * Can only be called by the contract owner.
+     * @param _new The new total supply value.
+     */
     function setTotalSupplyByDay(uint256 _new) external onlyOwner {
         uint256 _old = totalSupplyByDay;
         totalSupplyByDay = _new;
         emit SetTotalSupplyByDay(msg.sender, _old, _new);
     }
 
+    /**
+     * @dev Sets the mint price for MeritCoin (in offeringIncense)
+     * @param _new The new mint price to be set.
+     * Requirements:
+     * - Only the contract owner can call this function.
+     */
     function setMintPrice(uint256 _new) external onlyOwner {
         uint256 _old = mintPrice;
         mintPrice = _new;
         emit SetMintPrice(msg.sender, _old, _new);
     }
 
+    /**
+     * @dev Sets the decrease coefficient for the MeritCoin gained in `offeringIncense`
+     * Only the contract owner can call this function.
+     * @param _new The new value for the decrease coefficient.
+     */
     function setDecreaseCoefficient(uint256 _new) external onlyOwner {
         uint256 _old = decreaseCoefficient;
         decreaseCoefficient = _new;
