@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-verify");
 require('hardhat-deploy');
 require('dotenv').config();
 
@@ -39,5 +40,11 @@ module.exports = {
   },
   namedAccounts: {
     deployer: 0
+  },
+  etherscan: {
+    apiKey: scanKey,
+  },
+  sourcify: {
+    enabled: true
   },
 };

@@ -1,4 +1,4 @@
-const baseURI = ""
+const baseURI = "https://test.caishenye.net"
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
