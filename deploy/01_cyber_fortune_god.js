@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const params = require('./args/cfg')
+const params = require('../args/cfg')
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     const { deploy } = deployments;
