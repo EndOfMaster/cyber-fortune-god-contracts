@@ -16,7 +16,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     uint256 public startTime;
     uint256 public totalSupplyByDay;
-    uint256 public decreaseCoefficient; //1.04491013
+    uint256 public decreaseCoefficient;
     uint256 public mintPrice;
 
     uint256 public remainingSupply;
@@ -36,6 +36,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
     event UpdateSupplyByDay(address _sender, uint256 _days, uint256 _timestamp);
 
     event InitMeritCoin(address _sender, address _meritCoin);
+    event InitFortuneStick(address _sender, address _meritCoin);
     event WithdrawETH(address _sender, address _receiver, uint256 _amount);
     event SetTotalSupplyByDay(address _sender, uint256 _old, uint256 _new);
     event SetMintPrice(address _sender, uint256 _old, uint256 _new);
@@ -65,9 +66,6 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
     /**
      * @dev Performs the action of offering incense, mint MeritCoin for caller
-     * @param _incenseType The type of incense being offered.
-     * @param _quantity The quantity of incense being offered.
-     * @return A boolean indicating whether the offering was successful or not.
      */
     function offeringIncense() external payable {
         require(msg.value >= mintPrice, "CyberFortuneGod: payment amount is insufficient");
@@ -155,12 +153,6 @@ contract CyberFortuneGod is OwnableUpgradeable {
         }
     }
 
-    /**
-     * @dev Calculates the first 4 amount based on the given decimals and mint number
-     * @param _decimals The number of decimals to consider.
-     * @param _mintNum The mint number to use for calculation.
-     * @return The calculated first 4 amount.
-     */
     function getTop4Amount(uint256 _decimals, uint256 _mintNum) private pure returns (uint256 _returns) {
         if (_mintNum == 0) return 10 ** _decimals * firstMintByDay;
         if (_mintNum == 1) return 10 ** _decimals * secondMintByDay;
@@ -180,6 +172,18 @@ contract CyberFortuneGod is OwnableUpgradeable {
         require(meritCoin == address(0), "CyberFortuneGod: meritCoin has been set");
         meritCoin = _meritCoin;
         emit InitMeritCoin(msg.sender, _meritCoin);
+    }
+
+    /**
+     * @dev Initializes the FortuneStick contract address.
+     * @param _fortuneStick The address of the FortuneStick contract.
+     * Requirements:
+     * - Only the contract owner can call this function.
+     */
+    function initFortuneStick(address _fortuneStick) external onlyOwner {
+        require(fortuneStick == address(0), "CyberFortuneGod: fortuneStick has been set");
+        fortuneStick = _fortuneStick;
+        emit InitFortuneStick(msg.sender, _fortuneStick);
     }
 
     /**

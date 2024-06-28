@@ -1,9 +1,11 @@
 const { ethers } = require("hardhat");
 
 const startTime = "1717516800"
-const variationFactor = 5
+const decreaseCoefficient = ethers.parseEther("1.04491013")
+const totalSupplyByDay = ethers.parseEther("888")
+const mintPrice = ethers.parseEther("0.001")
 
-const params = [startTime, variationFactor]
+const params = [startTime, decreaseCoefficient, totalSupplyByDay, mintPrice]
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     const { deploy } = deployments;
@@ -12,7 +14,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     let impl = await deploy('Impl', {
         from: deployer,
         contract: 'CyberFortuneGod',
-        args: [],
+        args: params,
         log: true,
         skipIfAlreadyDeployed: true,
     });
@@ -20,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     const CFD = await ethers.getContractFactory('CyberFortuneGod')
     const cfdImpl = CFD.attach(impl.address)
 
-    const fragment = CFD.interface.getFunction('initialize(uint256, uint256)');
+    const fragment = CFD.interface.getFunction('initialize(uint256, uint256, uint256, uint256)');
     const cfdProxyData = cfdImpl.interface.encodeFunctionData(fragment, params);
 
     let proxyAdminAddress = '';
