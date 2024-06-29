@@ -2,11 +2,11 @@ const hre = require("hardhat");
 const { deployments, ethers } = hre;
 
 async function main() {
-  const CFD = await hre.ethers.getContractFactory("CyberFortuneGod");
-  const cfdAddress = (await deployments.get('CFD')).address;
-  const cfd = CFD.attach(cfdAddress);
+  const CFG = await hre.ethers.getContractFactory("CyberFortuneGod");
+  const cfdAddress = (await deployments.get('CFG')).address;
+  const cfd = CFG.attach(cfdAddress);
 
-  await cfd.offeringIncense("2552352",{value:ethers.parseEther("0.001")});
+  await cfd.offeringIncense("2552352", { value: ethers.parseEther("0.001") });
 
 }
 

@@ -13,10 +13,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
         skipIfAlreadyDeployed: true,
     });
 
-    const CFD = await ethers.getContractFactory('CyberFortuneGod')
-    const cfdImpl = CFD.attach(impl.address)
+    const CFG = await ethers.getContractFactory('CyberFortuneGod')
+    const cfdImpl = CFG.attach(impl.address)
 
-    const fragment = CFD.interface.getFunction('initialize(uint256, uint256, uint256, uint256)');
+    const fragment = CFG.interface.getFunction('initialize(uint256, uint256, uint256, uint256)');
     const cfdProxyData = cfdImpl.interface.encodeFunctionData(fragment, params);
     console.log('proxy data', cfdProxyData)
 
@@ -28,7 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     const ProxyAdmin = await hre.ethers.getContractFactory("ProxyAdmin");
     const proxyAdmin = ProxyAdmin.attach(proxyAdminAddress);
 
-    let proxy = await deploy('CFD', {
+    let proxy = await deploy('CFG', {
         from: deployer,
         contract: 'MyTransparentUpgradeableProxy',
         args: [impl.address, proxyAdminAddress, cfdProxyData],

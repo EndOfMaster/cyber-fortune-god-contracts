@@ -16,6 +16,26 @@ module.exports = {
       accounts: [`${privateKey}`],
       chainId: 11155111,
     },
+    // for mainnet
+    "base-mainnet": {
+      url: 'https://mainnet.base.org',
+      accounts: [`${privateKey}`],
+      gasPrice: 1000000000,
+    },
+    // for Sepolia testnet
+    "base-sepolia": {
+      url: "https://sepolia.base.org",
+      accounts: [`${privateKey}`],
+      gasPrice: 1000000000,
+    },
+    "polygon-mumbai": {
+      url: 'https://gateway.tenderly.co/public/polygon-mumbai',
+      accounts: [`${privateKey}`],
+    },
+    "bsc-test": {
+      url: 'https://data-seed-prebsc-2-s2.bnbchain.org:8545',
+      accounts: [`${privateKey}`],
+    }
   },
   solidity: {
     compilers: [

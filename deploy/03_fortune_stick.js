@@ -4,9 +4,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
 
-    const CFD = await ethers.getContractFactory('CyberFortuneGod')
-    const cfdAddress = (await deployments.get('CFD')).address;
-    const cfd = CFD.attach(cfdAddress);
+    const CFG = await ethers.getContractFactory('CyberFortuneGod')
+    const cfdAddress = (await deployments.get('CFG')).address;
+    const cfd = CFG.attach(cfdAddress);
 
     let fortuneStick = await deploy('FortuneStick', {
         from: deployer,

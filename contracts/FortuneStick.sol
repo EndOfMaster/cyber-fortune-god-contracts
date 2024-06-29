@@ -19,7 +19,7 @@ contract FortuneStick is Ownable, ERC721Enumerable {
 
     event SetBaseURI(address _sender, string _old, string _new);
 
-    constructor(address _minter, string memory _baseURI_) Ownable() ERC721("Draw Fortune Stick", "DFS") {
+    constructor(address _minter, string memory _baseURI_) Ownable() ERC721("Fortune Stick", "FS") {
         minter = _minter;
         baseURI = _baseURI_;
     }
