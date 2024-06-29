@@ -87,11 +87,9 @@ contract CyberFortuneGod is OwnableUpgradeable {
 
         userMintNumByDay[_days][msg.sender] += 1;
 
-        uint256 _decimals = IMeritCoin(meritCoin).decimals();
-        uint256 _mintAmount = 10 ** _decimals * _returns;
-        IMeritCoin(meritCoin).mint(msg.sender, _mintAmount);
+        IMeritCoin(meritCoin).mint(msg.sender, _returns);
 
-        emit OfferingIncense(msg.sender, _mintAmount);
+        emit OfferingIncense(msg.sender, _returns);
     }
 
     /**

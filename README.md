@@ -15,3 +15,7 @@ npx hardhat deploy --network xxx
 #### note
 - xxx is the network configured in `hardhat.config.js`
 - test deploy is `npx hardhat deploy`
+
+### 4. update contract
+1. delete `deployment/xxx/yyy` (xxx: network, yyy: Impl.json)
+2. run deploy shell `npx hardhat deploy --network xxx`
