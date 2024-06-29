@@ -31,7 +31,7 @@ contract FortuneStick is Ownable, ERC721Enumerable {
      * @param _to The address to receive the fortune stick.
      * @return _tokenId The ID of the fortune stick token.
      */
-    function drawFortune(address _to) external returns (uint256 _tokenId) {
+    function draw(address _to) external returns (uint256 _tokenId) {
         require(msg.sender == minter, "DrawFortuneStick: You are not minter");
 
         _tokenId = totalSupply();
