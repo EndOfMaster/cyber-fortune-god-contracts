@@ -18,6 +18,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
     const fragment = CFD.interface.getFunction('initialize(uint256, uint256, uint256, uint256)');
     const cfdProxyData = cfdImpl.interface.encodeFunctionData(fragment, params);
+    console.log('proxy data', cfdProxyData)
 
     let proxyAdminAddress = '';
     if (proxyAdminAddress == '') {

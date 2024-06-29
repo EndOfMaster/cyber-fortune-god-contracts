@@ -101,8 +101,8 @@ contract CyberFortuneGod is OwnableUpgradeable {
      */
     function drawFortune() external {
         uint256 _decimals = IMeritCoin(meritCoin).decimals();
-        uint256 _burnAmount = 8 ** _decimals * 5;
-        require(IMeritCoin(meritCoin).allowance(msg.sender, address(this)) > 10 ** _decimals * 5, "CyberFortuneGod: Requires 8 Merit Coin to draw fortune stick");
+        uint256 _burnAmount = 10 ** _decimals * 8;
+        require(IMeritCoin(meritCoin).allowance(msg.sender, address(this)) > 10 ** _decimals * 8, "CyberFortuneGod: Requires 8 Merit Coin to draw fortune stick");
 
         IMeritCoin(meritCoin).transferFrom(msg.sender, address(this), _burnAmount);
         IMeritCoin(meritCoin).burn(_burnAmount);
