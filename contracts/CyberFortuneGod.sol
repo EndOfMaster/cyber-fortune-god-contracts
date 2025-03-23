@@ -106,7 +106,7 @@ contract CyberFortuneGod is OwnableUpgradeable {
         IMeritCoin(meritCoin).burn(_burnAmount);
 
         uint256 _tokenId = IFortuneStick(fortuneStick).draw(msg.sender);
-        uint256 _stickNo = IFortuneStick(fortuneStick).getStickNo(_tokenId);
+        (, uint256 _stickNo) = IFortuneStick(fortuneStick).getStickNo(_tokenId);
 
         emit DrawFortune(msg.sender, _tokenId, _stickNo);
     }
