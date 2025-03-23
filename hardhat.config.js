@@ -11,6 +11,11 @@ module.exports = {
   networks: {
     hardhat: {
     },
+    ethereum: {
+      url: 'https://rpc.ankr.com/eth',
+      accounts: [`${privateKey}`],
+      // gasPrice: 1000000000,
+    },
     sepolia: {
       url: 'https://rpc2.sepolia.org/',
       accounts: [`${privateKey}`],
