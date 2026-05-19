@@ -11,6 +11,10 @@ module.exports = {
   networks: {
     hardhat: {
     },
+    nstchain: {
+      url: 'http://16.162.107.165:8545',
+      accounts: [`${privateKey}`],
+    },
     ethereum: {
       url: 'https://rpc.ankr.com/eth',
       accounts: [`${privateKey}`],
