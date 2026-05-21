@@ -121,6 +121,11 @@ contract CyberFortuneGod is OwnableUpgradeable {
         return (block.timestamp - startTime) / (24 * 60 * 60);
     }
 
+    function getOfferingIncenseFrequency(address _user) external view returns (uint256) {
+        uint256 _days = getDays();
+        return 3 - userMintNumByDay[_days][_user];
+    }
+
     // ==================== private function ====================
 
     /**
