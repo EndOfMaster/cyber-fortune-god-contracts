@@ -6,7 +6,7 @@ async function main() {
   const cfdAddress = (await deployments.get('CFG')).address;
   const cfd = CFG.attach(cfdAddress);
 
-  await cfd.offeringIncense("2552352", { value: ethers.parseEther("0.001") });
+  await cfd.offeringIncense({ value: ethers.parseEther("88") });
 
 }
 
