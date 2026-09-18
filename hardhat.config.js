@@ -11,39 +11,58 @@ module.exports = {
   networks: {
     hardhat: {
     },
+    localhost: {
+      url: process.env.LOCAL_RPC_URL || 'http://127.0.0.1:8545',
+      chainId: 31337,
+    },
     nstchain: {
-      url: 'http://16.162.107.165:8545',
+      url: process.env.NSTCHAIN_RPC_URL || 'https://rpc.nstchain.com',
       accounts: [`${privateKey}`],
+      chainId: 2511,
     },
     ethereum: {
-      url: 'https://rpc.ankr.com/eth',
+      url: 'https://ethereum-rpc.publicnode.com',
       accounts: [`${privateKey}`],
+      chainId: 1,
       // gasPrice: 1000000000,
     },
     sepolia: {
-      url: 'https://rpc2.sepolia.org/',
+      url: process.env.SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com',
       accounts: [`${privateKey}`],
       chainId: 11155111,
     },
     // for mainnet
     "base-mainnet": {
-      url: 'https://mainnet.base.org',
+      url: 'https://base-rpc.publicnode.com',
       accounts: [`${privateKey}`],
+      chainId: 8453,
       gasPrice: 1000000000,
     },
     // for Sepolia testnet
     "base-sepolia": {
-      url: "https://sepolia.base.org",
+      url: "https://base-sepolia-rpc.publicnode.com",
       accounts: [`${privateKey}`],
+      chainId: 84532,
       gasPrice: 1000000000,
     },
     "polygon-mumbai": {
-      url: 'https://gateway.tenderly.co/public/polygon-mumbai',
+      url: 'https://polygon-mumbai-bor-rpc.publicnode.com',
       accounts: [`${privateKey}`],
+      chainId: 80001,
     },
-    "bsc-test": {
-      url: 'https://data-seed-prebsc-2-s2.bnbchain.org:8545',
+    // BNB Smart Chain 主网（chain 56）：RPC 可用 BSC_RPC_URL 覆盖，
+    // 部署参数必须使用 BSC_ 前缀环境变量（见 args/params.js）。
+    "bsc": {
+      url: process.env.BSC_RPC_URL || 'https://bsc-dataseed.bnbchain.org',
       accounts: [`${privateKey}`],
+      chainId: 56,
+      gasPrice: 1000000000,
+    },
+    // BNB Smart Chain 测试网（chain 97）：参数使用 BSC_TEST_ 前缀环境变量。
+    "bsc-test": {
+      url: process.env.BSC_TEST_RPC_URL || 'https://bsc-testnet-rpc.publicnode.com',
+      accounts: [`${privateKey}`],
+      chainId: 97,
     }
   },
   solidity: {
@@ -51,9 +70,17 @@ module.exports = {
       {
         version: "0.8.20",
         settings: {
+          // 显式固定 EVM target（含 PUSH0 的 Shanghai 语义），BSC 主网/测试网
+          // 均已支持；新增候选链须先验证 opcode 兼容性再放开。
+          evmVersion: "shanghai",
           optimizer: {
             enabled: true,
             runs: 200,
+          },
+          outputSelection: {
+            "*": {
+              "*": ["storageLayout"],
+            },
           },
         },
       },

@@ -6,6 +6,11 @@
     "hardhat": "^2.22.4",
     "hardhat-deploy": "^0.12.4"
   },
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "export-manifest": "hardhat run scripts/exportManifest.js"
+  },
   "dependencies": {
     "@openzeppelin/contracts": "4.7.3",
     "@openzeppelin/contracts-upgradeable": "4.7.3"
