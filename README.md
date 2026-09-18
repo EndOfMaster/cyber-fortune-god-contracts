@@ -25,7 +25,20 @@ npx hardhat deploy --network xxx
 2. 设置 `NEW_IMPL_ADDRESS=0x... CONFIRM_UPGRADE=true` 后运行 `npx hardhat run scripts/upgrade.js --network xxx`
 3. 使用 `scripts/exportManifest.js` 导出完整部署清单，再导入 Rails chain registry
 
-### 5. BSC 部署（主网 56 / 测试网 97）
+### 5. 多链部署（BSC / Arbitrum / Robinhood）
+
+| 网络 | hardhat 名称 | Chain ID | 参数前缀 | 默认 RPC |
+| --- | --- | --- | --- | --- |
+| BNB Smart Chain | `bsc` | 56 | `BSC_` | https://bsc-dataseed.bnbchain.org |
+| BSC 测试网 | `bsc-test` | 97 | `BSC_TEST_` | https://bsc-testnet-rpc.publicnode.com |
+| Arbitrum One | `arb` | 42161 | `ARB_` | https://arb1.arbitrum.io/rpc |
+| Arbitrum Sepolia | `arb-test` | 421614 | `ARB_TEST_` | https://sepolia-rollup.arbitrum.io/rpc |
+| Robinhood Chain | `robinhood` | 4663 | `ROBINHOOD_` | https://rpc.mainnet.chain.robinhood.com |
+| Robinhood 测试网 | `robinhood-test` | 46630 | `ROBINHOOD_TEST_` | https://rpc.testnet.chain.robinhood.com |
+
+各链的必需参数（开始时间/衰减系数/每日供应/上香价/初始接收地址/baseURI）均按
+`<前缀>参数名` 读取，例如 Arbitrum 测试网为 `ARB_TEST_CFG_START_TIME`；
+BSC 网段详见下文 BSC 小节。
 
 BSC 网络已在 `hardhat.config.js` 定义（`bsc`=56、`bsc-test`=97），编译产物固定
 `evmVersion: shanghai`。**BSC 系网络强制使用带前缀的环境变量**，与既有链的全局

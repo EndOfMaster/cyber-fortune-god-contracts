@@ -63,6 +63,31 @@ module.exports = {
       url: process.env.BSC_TEST_RPC_URL || 'https://bsc-testnet-rpc.publicnode.com',
       accounts: [`${privateKey}`],
       chainId: 97,
+    },
+    // Arbitrum One（chain 42161）：参数使用 ARB_ 前缀环境变量。
+    "arb": {
+      url: process.env.ARB_RPC_URL || 'https://arb1.arbitrum.io/rpc',
+      accounts: [`${privateKey}`],
+      chainId: 42161,
+    },
+    // Arbitrum Sepolia 测试网（chain 421614）：参数使用 ARB_TEST_ 前缀。
+    "arb-test": {
+      url: process.env.ARB_TEST_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc',
+      accounts: [`${privateKey}`],
+      chainId: 421614,
+    },
+    // Robinhood Chain 主网（chain 4663，Arbitrum Orbit/Nitro，ETH gas）：参数使用
+    // ROBINHOOD_ 前缀环境变量。
+    "robinhood": {
+      url: process.env.ROBINHOOD_RPC_URL || 'https://rpc.mainnet.chain.robinhood.com',
+      accounts: [`${privateKey}`],
+      chainId: 4663,
+    },
+    // Robinhood Chain 测试网（chain 46630）：参数使用 ROBINHOOD_TEST_ 前缀。
+    "robinhood-test": {
+      url: process.env.ROBINHOOD_TEST_RPC_URL || 'https://rpc.testnet.chain.robinhood.com',
+      accounts: [`${privateKey}`],
+      chainId: 46630,
     }
   },
   solidity: {

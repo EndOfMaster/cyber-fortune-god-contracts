@@ -8,6 +8,10 @@ const LOCAL_NETWORKS = new Set(["hardhat", "localhost"]);
 const PREFIXED_NETWORKS = {
     bsc: "BSC",
     "bsc-test": "BSC_TEST",
+    arb: "ARB",
+    "arb-test": "ARB_TEST",
+    robinhood: "ROBINHOOD",
+    "robinhood-test": "ROBINHOOD_TEST",
 };
 
 function prefixFor(networkName) {

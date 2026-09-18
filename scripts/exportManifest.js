@@ -11,7 +11,11 @@ const NETWORK_META = {
   nstchain: { name: "NSTChain", symbol: "NST", rpc: "https://rpc.nstchain.com", environment: "production" },
   sepolia: { name: "Sepolia", symbol: "ETH", rpc: "https://ethereum-sepolia-rpc.publicnode.com", environment: "testnet" },
   bsc: { name: "BNB Smart Chain", symbol: "BNB", rpc: "https://bsc-dataseed.bnbchain.org", environment: "production" },
-  "bsc-test": { name: "BNB Smart Chain Testnet", symbol: "tBNB", rpc: "https://bsc-testnet-rpc.publicnode.com", environment: "testnet" }
+  "bsc-test": { name: "BNB Smart Chain Testnet", symbol: "tBNB", rpc: "https://bsc-testnet-rpc.publicnode.com", environment: "testnet" },
+  arb: { name: "Arbitrum One", symbol: "ETH", rpc: "https://arb1.arbitrum.io/rpc", environment: "production" },
+  "arb-test": { name: "Arbitrum Sepolia", symbol: "ETH", rpc: "https://sepolia-rollup.arbitrum.io/rpc", environment: "testnet" },
+  robinhood: { name: "Robinhood Chain", symbol: "ETH", rpc: "https://rpc.mainnet.chain.robinhood.com", environment: "production" },
+  "robinhood-test": { name: "Robinhood Chain Testnet", symbol: "ETH", rpc: "https://rpc.testnet.chain.robinhood.com", environment: "testnet" }
 };
 
 function hashJson(value) {
