@@ -1,6 +1,6 @@
 const { network } = require("hardhat");
 
-const LOCAL_NETWORKS = new Set(["hardhat", "localhost"]);
+const LOCAL_NETWORKS = new Set(["hardhat", "localhost", "localhost2"]);
 
 // 新增链必须使用带网络前缀的参数（如 BSC_CFG_START_TIME、BSC_TEST_MERIT_COIN_RECEIVER），
 // 禁止与既有链共用全局参数——避免把一条链的经济参数照搬到另一条链

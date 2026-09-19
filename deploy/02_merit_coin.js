@@ -4,7 +4,8 @@ const { parameter } = require("../args/params");
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
-    const receiver = parameter("MERIT_COIN_RECEIVER");
+    // 本地开发链缺省把首发分配发给 deployer；真实链必须显式提供 MERIT_COIN_RECEIVER。
+    const receiver = parameter("MERIT_COIN_RECEIVER", deployer);
 
     const CFG = await ethers.getContractFactory('CyberFortuneGod');
     const cfdAddress = (await deployments.get('CFG')).address;

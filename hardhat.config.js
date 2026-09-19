@@ -10,10 +10,18 @@ const scanKey = process.env.ETHERSCAN_API_KEY ?? "ETHERSCAN_API_KEY";
 module.exports = {
   networks: {
     hardhat: {
+      // bin/dev-local --two-chains 通过 HARDHAT_NODE_CHAIN_ID 让第二个
+      // `hardhat node` 进程以 31338 起链；hardhat v2 无 --chainId CLI 参数。
+      chainId: Number.parseInt(process.env.HARDHAT_NODE_CHAIN_ID || '31337', 10),
     },
     localhost: {
       url: process.env.LOCAL_RPC_URL || 'http://127.0.0.1:8545',
       chainId: 31337,
+    },
+    // bin/dev-local --two-chains 的第二本地节点（hardhat node --chainId 31338）。
+    localhost2: {
+      url: process.env.LOCAL_RPC_URL_2 || 'http://127.0.0.1:31338',
+      chainId: 31338,
     },
     nstchain: {
       url: process.env.NSTCHAIN_RPC_URL || 'https://rpc.nstchain.com',

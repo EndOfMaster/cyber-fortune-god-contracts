@@ -8,6 +8,7 @@ const CONTRACT_FILES = ["CFG", "Impl", "ProxyAdmin", "MeritCoin", "FortuneStick"
 const NETWORK_META = {
   hardhat: { name: "NSTChain Local (Hardhat)", symbol: "NST", rpc: "http://127.0.0.1:8545", environment: "development" },
   localhost: { name: "NSTChain Local (Hardhat)", symbol: "NST", rpc: "http://127.0.0.1:8545", environment: "development" },
+  localhost2: { name: "NSTChain Local 2 (Hardhat)", symbol: "NST", rpc: "http://127.0.0.1:31338", environment: "development" },
   nstchain: { name: "NSTChain", symbol: "NST", rpc: "https://rpc.nstchain.com", environment: "production" },
   sepolia: { name: "Sepolia", symbol: "ETH", rpc: "https://ethereum-sepolia-rpc.publicnode.com", environment: "testnet" },
   bsc: { name: "BNB Smart Chain", symbol: "BNB", rpc: "https://bsc-dataseed.bnbchain.org", environment: "production" },
